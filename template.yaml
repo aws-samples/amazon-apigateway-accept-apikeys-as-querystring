@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  APIKeyQueryString blog post.
+Globals:
+  Function:
+    Timeout: 10
+  Api:
+    OpenApiVersion: 3.0.1
+
+
+Resources:
+  MyAuthFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: auth_function/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+  BackendFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      Events:
+        HelloWorld:
+          Type: Api 
+          Properties:
+            RestApiId: 
+              Ref: MyApi
+            Path: /auth
+            Method: get
+            
+  MyApi:
+      DependsOn: MyAuthFunction
+      Type: AWS::Serverless::Api
+      Properties:
+        StageName: prod
+        Auth:
+            DefaultAuthorizer: MyLambdaRequestAuthorizer
+            ApiKeyRequired: true
+            Authorizers:
+              MyLambdaRequestAuthorizer:
+                FunctionPayloadType: REQUEST
+                FunctionArn: !GetAtt MyAuthFunction.Arn
+                Identity:
+                  ReauthorizeEvery: 0
+                  QueryStrings:
+                    - apiKey
+        DefinitionBody:
+          swagger: "2.0"
+          info:
+            version: "2021-08-10T13:18:57Z"
+            title: "API-Key-QueryString"
+          basePath: "/prod"
+          x-amazon-apigateway-api-key-source: "AUTHORIZER" #important
+          schemes:
+          - "https"
+          paths:
+            /auth:
+              get:
+                produces:
+                - "application/json"
+                responses:
+                  "200":
+                    description: "200 response"
+                    schema:
+                      $ref: "#/definitions/Empty"
+                x-amazon-apigateway-integration:
+                  type: "aws_proxy"
+                  httpMethod: "POST"
+                  uri: 
+                    Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BackendFunction.Arn}/invocations"
+                  responses:
+                    default:
+                      statusCode: "200"
+                  passthroughBehavior: "when_no_match"
+                  contentHandling: "CONVERT_TO_TEXT"
+          definitions:
+            Empty:
+              type: "object"
+              title: "Empty Schema"
+            
+  ApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    DependsOn: MyApiprodStage
+    Properties:
+      Name: !Join ["", [{"Ref": "AWS::StackName"}, "-apikey"]]
+      Enabled: true
+      StageKeys:
+        - RestApiId: !Ref MyApi
+          StageName: prod
+      Value: !Join ["", [{"Ref": "AWS::StackName"}, "-abcdefhijk1234567890"]]
+          
+  UsagePlan:
+    DependsOn: MyApiprodStage
+    Type: AWS::ApiGateway::UsagePlan
+    Properties:
+      ApiStages:
+        - ApiId: !Ref MyApi
+          Stage: prod
+      Throttle:
+        BurstLimit: 200
+        RateLimit: 100
+      UsagePlanName: MyUsagePlan
+      
+  UsagePlanKey:
+    Type: AWS::ApiGateway::UsagePlanKey
+    Properties:
+      KeyId: !Ref ApiKey
+      KeyType: API_KEY
+      UsagePlanId: !Ref UsagePlan
+
+
+Outputs:
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/prod/auth?apiKey=${AWS::StackName}-abcdefhijk1234567890"
+
