@@ -7,18 +7,18 @@ This repository contains a sample [AWS SAM](https://aws.amazon.com/serverless/sa
 2. [Configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html)
 
 ## Instructions
-1. Clone this repository
+1. Clone this repository ```git clone https://github.com/aws-samples/amazon-apigateway-accept-apikeys-as-querystring.git```
 2. Navigate locally to the repository using your command line
-3. Execute the code
+3. Execute the following code code
 ```
-sam build
+sam build 
 sam deploy --guided
 ```
 4. From the outputs, copy the URL and put it in your browser. 
 
 ## Architecture Diagram
 ![Alt text](diagrams/API_Keys.png?raw=true "Title")
-
+### Walk through
 1.	Client sends HTTP request to API with the API Key in the query string
 2.	Amazon API Gateway sends the request to a REQUEST type custom authorizer
 3.	The custom authorizer function extracts the API Key from the payload. It constructs the response object with the API Key as the value for the `usageIdentifierKey` property
