@@ -15,7 +15,7 @@ sam build
 sam deploy --guided
 ```
 4. From the outputs, copy the URL and put it in your browser. 
-
+![Alt text](diagrams/TemplateOutput.png?raw=true "Title")
 ## Architecture Diagram
 ![Alt text](diagrams/API_Keys.png?raw=true "Title")
 ### Walk through
