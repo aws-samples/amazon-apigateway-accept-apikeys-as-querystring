@@ -9,7 +9,7 @@ This repository contains a sample [AWS SAM](https://aws.amazon.com/serverless/sa
 ## Instructions
 1. Clone this repository ```git clone https://github.com/aws-samples/amazon-apigateway-accept-apikeys-as-querystring.git```
 2. Navigate locally to the repository using your command line
-3. Execute the following code:
+3. Execute the following code
 ```
 sam build 
 sam deploy --guided
