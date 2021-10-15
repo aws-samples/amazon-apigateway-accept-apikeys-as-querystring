@@ -1,6 +1,10 @@
 ## Accepting API Keys as a query string in Amazon API Gateway
 
-This repository contains a sample [AWS SAM](https://aws.amazon.com/serverless/sam/) application which demonstrates how you can accept API Keys in [Amazon API Gateway](https://aws.amazon.com/api-gateway/) as query string parameters. This repository is accompanied by a blog post authored by Ronan Prenty & Zac Burns. 
+This repository contains a sample [AWS SAM](https://aws.amazon.com/serverless/sam/) application which demonstrates how you can accept API Keys in [Amazon API Gateway](https://aws.amazon.com/api-gateway/) as query string parameters.
+
+It's important to acknowledge that API keys are not a primary authorization mechanism for your APIs. If multiple APIs are associated with a usage plan, a user with a valid API key can access all APIs in that usage plan. We provide [numerous options](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-control-access-to-api.html) for securing access to your APIs, including [resource policies](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-resource-policies.html), [Lambda authorizers](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html), and [Amazon Cognito user pools](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-integrate-with-cognito.html).
+
+This repository is accompanied by a [blog post](https://aws.amazon.com/blogs/compute/accepting-api-keys-as-a-query-string-in-amazon-api-gateway/) authored by Ronan Prenty & Zac Burns. 
 
 ## Pre-requisites
 1. [Install the AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
