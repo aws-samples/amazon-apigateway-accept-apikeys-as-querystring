@@ -12,6 +12,8 @@ This repository contains a sample [AWS SAM](https://aws.amazon.com/serverless/sa
 3. Execute the following code:
 ```
 sam build 
+// if you encounter Python version issue, use: sam build --use-container
+
 sam deploy --guided
 ```
 4. From the outputs, copy the URL and put it in your browser. 
