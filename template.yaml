@@ -100,7 +100,7 @@ Resources:
         - ApiId: !Ref MyApi
           Stage: prod
       Throttle:
-        BurstLimit: 200
+        BurstLimit: 50
         RateLimit: 100
       UsagePlanName: MyUsagePlan
       
