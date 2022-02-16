@@ -22,7 +22,7 @@ def lambda_handler(event, context):
     policy.restApiId = apiGatewayArnTmp[0]
     policy.region = tmp[3]
     policy.stage = apiGatewayArnTmp[1]
-    policy.allowMethod('GET', '/auth') 
+    policy.allowMethod('GET', event['path'])
     authResponse = policy.build()
     context = {
         'SomeKey': 'SomeValue'
